@@ -6,5 +6,5 @@ public class EntertainmentVenue extends Place {
     public String openingHours;
     public String closingHours;
     public Float entryFee;
-    public List<Enum<EntertainmentTag>> tags;
+    public List<EntertainmentTag> tags;
 }

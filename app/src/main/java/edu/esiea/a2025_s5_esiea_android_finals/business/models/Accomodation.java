@@ -5,6 +5,6 @@ import java.util.List;
 
 public class Accomodation extends Place {
     public Float minNightlyRate;
-    public List<Enum<AccomodationTag>> tags;
+    public List<AccomodationTag> tags;
 
 }

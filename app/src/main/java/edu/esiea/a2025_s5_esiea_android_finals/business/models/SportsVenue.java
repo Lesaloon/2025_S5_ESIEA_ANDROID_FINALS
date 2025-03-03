@@ -7,5 +7,5 @@ public class SportsVenue extends Place {
     public String closingHours;
     public Boolean SubscriptionRequired;
     public Float entryFee;
-    public List<Enum<SportsTag>> tags;
+    public List<SportsTag> tags;
 }
