@@ -37,7 +37,15 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    // ROOM
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.common)
+    // Material Design
+    implementation(libs.osmdroid.android)
+    implementation(libs.material)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }

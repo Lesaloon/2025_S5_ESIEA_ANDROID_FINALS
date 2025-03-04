@@ -1,7 +1,13 @@
 package edu.esiea.a2025_s5_esiea_android_finals.business.models;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 // This is the POI (Point of Interest) class that will be the mother class of all the other POI classes
+@Entity(tableName = "places")
 public abstract class Place {
+    @PrimaryKey(autoGenerate = true)
+    public int id;
     public String name;
     public String description;
     public String phoneNumber;
