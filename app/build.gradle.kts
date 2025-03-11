@@ -26,8 +26,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
@@ -40,9 +40,12 @@ dependencies {
     // ROOM
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.common)
+    annotationProcessor(libs.androidx.room.compiler)
     // Material Design
     implementation(libs.osmdroid.android)
     implementation(libs.material)
+    // JSON serialization for Room type converters
+    implementation(libs.gson)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
