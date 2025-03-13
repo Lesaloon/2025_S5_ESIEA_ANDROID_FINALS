@@ -388,24 +388,26 @@ public class CreatePlaceFragment extends Fragment {
     private void savePlaceToDatabase() {
         try {
             Place place = createPlaceBasedOnType();
-            
+
             if (place != null) {
                 // Currently only Accommodation is fully implemented in the database
                 if (place instanceof Accomodation) {
                     viewModel.insertAccommodation((Accomodation) place);
                     Toast.makeText(requireContext(), getString(R.string.place_saved), Toast.LENGTH_SHORT).show();
-                    // TODO: Navigate back or clear form
                 } else {
-                    // For other types, just show a success message (they're not stored yet)
+                    // For other types, show a message (you may extend the database later)
                     Toast.makeText(requireContext(), "Entity created but database implementation is pending", Toast.LENGTH_SHORT).show();
                 }
+                // After saving, navigate back to the MapFragment so the new marker will be displayed
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
         } catch (Exception e) {
-            Toast.makeText(requireContext(), 
-                    getString(R.string.error_saving_place, e.getMessage()), 
+            Toast.makeText(requireContext(),
+                    getString(R.string.error_saving_place, e.getMessage()),
                     Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private Place createPlaceBasedOnType() {
         String name = nameInput.getText().toString().trim();

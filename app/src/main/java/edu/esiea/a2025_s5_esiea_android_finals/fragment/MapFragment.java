@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.esiea.a2025_s5_esiea_android_finals.R;
+import edu.esiea.a2025_s5_esiea_android_finals.ViewModel.PlaceViewModel;
+import edu.esiea.a2025_s5_esiea_android_finals.business.models.Accomodation;
 
 public class MapFragment extends Fragment implements MapEventsReceiver {
     private MapView mapView;
@@ -40,26 +43,27 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         Context ctx = requireContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        
+
         // Initialize Map
         mapView = view.findViewById(R.id.map);
         mapView.setTileSource(TileSourceFactory.MAPNIK);
         mapView.setBuiltInZoomControls(true);
         mapView.setMultiTouchControls(true);
-        
+
         // Add map click listener
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
-        mapView.getOverlays().add(0, mapEventsOverlay); // Add at position 0 to ensure it gets events first
-        
-        showAllPlaces();
-        
+        mapView.getOverlays().add(0, mapEventsOverlay); // Ensure it gets events first
+
+        // Remove the hardcoded showAllPlaces() call and load saved places instead
+        loadSavedPlaces();
+
         // Center the map (Default location: Paris)
         IMapController mapController = mapView.getController();
         mapController.setZoom(14.0);
         GeoPoint startPoint = new GeoPoint(48.8566, 2.3522); // Paris
         mapController.setCenter(startPoint);
 
-        // Search Bar functionality
+        // Search Bar functionality remains unchanged
         searchBar = view.findViewById(R.id.search_bar);
         searchBar.setOnEditorActionListener((v, actionId, event) -> {
             String query = searchBar.getText().toString();
@@ -71,6 +75,29 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
         });
 
         return view;
+    }
+
+    /**
+     * Loads saved places from the database and adds a marker for each.
+     */
+    private void loadSavedPlaces() {
+        PlaceViewModel placeViewModel = new ViewModelProvider(requireActivity()).get(PlaceViewModel.class);
+        placeViewModel.getAllAccommodations().observe(getViewLifecycleOwner(), accommodations -> {
+            // Clear all overlays except the first one (the MapEventsOverlay)
+            while (mapView.getOverlays().size() > 1) {
+                mapView.getOverlays().remove(1);
+            }
+
+            // For each saved accommodation, create a marker on the map
+            for (Accomodation accommodation : accommodations) {
+                Marker marker = new Marker(mapView);
+                marker.setPosition(new GeoPoint(accommodation.latitude, accommodation.longitude));
+                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                marker.setTitle(accommodation.name);
+                mapView.getOverlays().add(marker);
+            }
+            mapView.invalidate();
+        });
     }
 
     @Override
