@@ -71,6 +71,8 @@ public class CreatePlaceFragment extends Fragment {
     
     private PlaceType selectedPlaceType;
 
+    private double latitude, longitude;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -95,9 +97,8 @@ public class CreatePlaceFragment extends Fragment {
             // Fill in latitude and longitude fields
             double latitude = args.getDouble("latitude");
             double longitude = args.getDouble("longitude");
-            
-//            latitudeInput.setText(String.valueOf(latitude));
-//            longitudeInput.setText(String.valueOf(longitude));
+            this.latitude = latitude;
+            this.longitude = longitude;
         }
     }
 
@@ -107,8 +108,6 @@ public class CreatePlaceFragment extends Fragment {
         phoneInput = view.findViewById(R.id.phone_input);
         emailInput = view.findViewById(R.id.email_input);
         websiteInput = view.findViewById(R.id.website_input);
-//        latitudeInput = view.findViewById(R.id.latitude_input);
-//        longitudeInput = view.findViewById(R.id.longitude_input);
         placeTypeDropdown = view.findViewById(R.id.place_type_dropdown);
         dynamicFieldsContainer = view.findViewById(R.id.dynamic_fields_container);
         selectLocationButton = view.findViewById(R.id.select_location_button);
@@ -366,16 +365,7 @@ public class CreatePlaceFragment extends Fragment {
             descriptionInput.setError(getString(R.string.error_description_required));
             isValid = false;
         }
-        
-        if (latitudeInput.getText().toString().trim().isEmpty()) {
-            latitudeInput.setError(getString(R.string.error_latitude_required));
-            isValid = false;
-        }
-        
-        if (longitudeInput.getText().toString().trim().isEmpty()) {
-            longitudeInput.setError(getString(R.string.error_longitude_required));
-            isValid = false;
-        }
+
         
         if (selectedPlaceType == null) {
             placeTypeDropdown.setError(getString(R.string.error_place_type_required));
@@ -405,6 +395,7 @@ public class CreatePlaceFragment extends Fragment {
             Toast.makeText(requireContext(),
                     getString(R.string.error_saving_place, e.getMessage()),
                     Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
     }
 
@@ -415,8 +406,8 @@ public class CreatePlaceFragment extends Fragment {
         String phone = phoneInput.getText().toString().trim();
         String email = emailInput.getText().toString().trim();
         String website = websiteInput.getText().toString().trim();
-        float latitude = Float.parseFloat(latitudeInput.getText().toString().trim());
-        float longitude = Float.parseFloat(longitudeInput.getText().toString().trim());
+        float latitude = (float) this.latitude;
+        float longitude = (float) this.longitude;
         
         Place place = null;
         
