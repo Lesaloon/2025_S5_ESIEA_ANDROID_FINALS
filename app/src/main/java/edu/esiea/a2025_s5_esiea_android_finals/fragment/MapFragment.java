@@ -108,17 +108,14 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
         placeViewModel.getAllAccommodations().observe(getViewLifecycleOwner(), accommodations -> {
             // For each saved accommodation, create a marker on the map
             for (Accomodation accommodation : accommodations) {
-                Marker marker = new Marker(mapView);
-                marker.setPosition(new GeoPoint(accommodation.latitude, accommodation.longitude));
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                marker.setTitle(accommodation.name);
-                
-                // Set marker click listener
-                marker.setOnMarkerClickListener((marker1, mapView1) -> {
-                    openPlaceDetails(accommodation.id, "Accommodation");
-                    return true;
-                });
-                
+                Marker marker = createMarker(
+                    accommodation.latitude, 
+                    accommodation.longitude, 
+                    accommodation.name,
+                    accommodation.id,
+                    "Accommodation",
+                    R.drawable.marker_accommodation
+                );
                 mapView.getOverlays().add(marker);
             }
             mapView.invalidate();
@@ -129,17 +126,14 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
         placeViewModel.getAllRestaurants().observe(getViewLifecycleOwner(), restaurants -> {
             // For each saved restaurant, create a marker on the map
             for (Restaurant restaurant : restaurants) {
-                Marker marker = new Marker(mapView);
-                marker.setPosition(new GeoPoint(restaurant.latitude, restaurant.longitude));
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                marker.setTitle(restaurant.name);
-                
-                // Set marker click listener
-                marker.setOnMarkerClickListener((marker1, mapView1) -> {
-                    openPlaceDetails(restaurant.id, "Restaurant");
-                    return true;
-                });
-                
+                Marker marker = createMarker(
+                    restaurant.latitude, 
+                    restaurant.longitude, 
+                    restaurant.name,
+                    restaurant.id,
+                    "Restaurant",
+                    R.drawable.marker_restaurant
+                );
                 mapView.getOverlays().add(marker);
             }
             mapView.invalidate();
@@ -150,17 +144,14 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
         placeViewModel.getAllCulturalVenues().observe(getViewLifecycleOwner(), venues -> {
             // For each saved venue, create a marker on the map
             for (CulturalVenue venue : venues) {
-                Marker marker = new Marker(mapView);
-                marker.setPosition(new GeoPoint(venue.latitude, venue.longitude));
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                marker.setTitle(venue.name);
-                
-                // Set marker click listener
-                marker.setOnMarkerClickListener((marker1, mapView1) -> {
-                    openPlaceDetails(venue.id, "CulturalVenue");
-                    return true;
-                });
-                
+                Marker marker = createMarker(
+                    venue.latitude, 
+                    venue.longitude, 
+                    venue.name,
+                    venue.id,
+                    "CulturalVenue",
+                    R.drawable.marker_cultural
+                );
                 mapView.getOverlays().add(marker);
             }
             mapView.invalidate();
@@ -171,17 +162,14 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
         placeViewModel.getAllEntertainmentVenues().observe(getViewLifecycleOwner(), venues -> {
             // For each saved venue, create a marker on the map
             for (EntertainmentVenue venue : venues) {
-                Marker marker = new Marker(mapView);
-                marker.setPosition(new GeoPoint(venue.latitude, venue.longitude));
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                marker.setTitle(venue.name);
-                
-                // Set marker click listener
-                marker.setOnMarkerClickListener((marker1, mapView1) -> {
-                    openPlaceDetails(venue.id, "EntertainmentVenue");
-                    return true;
-                });
-                
+                Marker marker = createMarker(
+                    venue.latitude, 
+                    venue.longitude, 
+                    venue.name,
+                    venue.id,
+                    "EntertainmentVenue",
+                    R.drawable.marker_entertainment
+                );
                 mapView.getOverlays().add(marker);
             }
             mapView.invalidate();
@@ -192,17 +180,14 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
         placeViewModel.getAllRelaxationVenues().observe(getViewLifecycleOwner(), venues -> {
             // For each saved venue, create a marker on the map
             for (RelaxationVenue venue : venues) {
-                Marker marker = new Marker(mapView);
-                marker.setPosition(new GeoPoint(venue.latitude, venue.longitude));
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                marker.setTitle(venue.name);
-                
-                // Set marker click listener
-                marker.setOnMarkerClickListener((marker1, mapView1) -> {
-                    openPlaceDetails(venue.id, "RelaxationVenue");
-                    return true;
-                });
-                
+                Marker marker = createMarker(
+                    venue.latitude, 
+                    venue.longitude, 
+                    venue.name,
+                    venue.id,
+                    "RelaxationVenue",
+                    R.drawable.marker_relaxation
+                );
                 mapView.getOverlays().add(marker);
             }
             mapView.invalidate();
@@ -213,21 +198,39 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
         placeViewModel.getAllSportsVenues().observe(getViewLifecycleOwner(), venues -> {
             // For each saved venue, create a marker on the map
             for (SportsVenue venue : venues) {
-                Marker marker = new Marker(mapView);
-                marker.setPosition(new GeoPoint(venue.latitude, venue.longitude));
-                marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                marker.setTitle(venue.name);
-                
-                // Set marker click listener
-                marker.setOnMarkerClickListener((marker1, mapView1) -> {
-                    openPlaceDetails(venue.id, "SportsVenue");
-                    return true;
-                });
-                
+                Marker marker = createMarker(
+                    venue.latitude, 
+                    venue.longitude, 
+                    venue.name,
+                    venue.id,
+                    "SportsVenue",
+                    R.drawable.marker_sports
+                );
                 mapView.getOverlays().add(marker);
             }
             mapView.invalidate();
         });
+    }
+    
+    /**
+     * Creates a marker with the specified icon and sets up its click listener
+     */
+    private Marker createMarker(double latitude, double longitude, String title, int id, String placeType, int iconResId) {
+        Marker marker = new Marker(mapView);
+        marker.setPosition(new GeoPoint(latitude, longitude));
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        marker.setTitle(title);
+        
+        // Set the icon based on place type
+        marker.setIcon(getResources().getDrawable(iconResId));
+        
+        // Set marker click listener
+        marker.setOnMarkerClickListener((marker1, mapView1) -> {
+            openPlaceDetails(id, placeType);
+            return true;
+        });
+        
+        return marker;
     }
 
     /**

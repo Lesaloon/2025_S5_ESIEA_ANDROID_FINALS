@@ -1,55 +1,56 @@
-<resources>
-    <string name="app_name">2025_S5_ESIEA_ANDROID_FINALS</string>
-    
-    <!-- Create Place Fragment -->
-    <string name="create_place">Create Place</string>
-    <string name="name">Name</string>
-    <string name="description">Description</string>
-    <string name="phone_number">Phone Number</string>
-    <string name="email">Email</string>
-    <string name="website_url">Website URL</string>
-    <string name="latitude">Latitude</string>
-    <string name="longitude">Longitude</string>
-    <string name="place_type">Place Type</string>
-    <string name="select_location">Select Location on Map</string>
+<resources>
+    <string name="app_name">2025_S5_ESIEA_ANDROID_FINALS</string>
+    
+    <!-- Create Place Fragment -->
+    <string name="create_place">Create Place</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="email">Email</string>
+    <string name="website_url">Website URL</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="place_type">Place Type</string>
+    <string name="select_location">Select Location on Map</string>
     <string name="save_place">Save Place</string>
-    
-    <!-- POI List Fragment -->
-    <string name="filter_all">All</string>
-    <string name="filter_accommodation">Accommodation</string>
-    <string name="filter_restaurant">Restaurant</string>
-    <string name="filter_cultural">Cultural</string>
-    <string name="filter_entertainment">Entertainment</string>
-    <string name="filter_relaxation">Relaxation</string>
-    <string name="filter_sports">Sports</string>
-    <string name="back">Back</string>
-    
-    <!-- Accommodation -->
-    <string name="min_nightly_rate">Minimum Nightly Rate</string>
-    <string name="accommodation_tags">Accommodation Tags</string>
-    
-    <!-- Restaurant -->
-    <string name="cuisine_origin">Cuisine Origin</string>
-    <string name="price_range">Price Range</string>
-    <string name="restaurant_tags">Restaurant Tags</string>
-    
-    <!-- Venues -->
-    <string name="opening_hours">Opening Hours</string>
-    <string name="closing_hours">Closing Hours</string>
-    <string name="entry_fee">Entry Fee</string>
-    <string name="cultural_tags">Cultural Tags</string>
-    <string name="entertainment_tags">Entertainment Tags</string>
-    <string name="relaxation_tags">Relaxation Tags</string>
-    <string name="sports_tags">Sports Tags</string>
-    <string name="subscription_required">Subscription Required</string>
-    
-    <!-- Validation Messages -->
-    <string name="error_name_required">Name is required</string>
-    <string name="error_description_required">Description is required</string>
-    <string name="error_latitude_required">Latitude is required</string>
-    <string name="error_longitude_required">Longitude is required</string>
-    <string name="error_place_type_required">Place type is required</string>
-    <string name="place_saved">Place saved successfully!</string>
-    <string name="place_updated">Place updated successfully!</string>
-    <string name="error_saving_place">Error saving place: %1$s</string>
+    <string name="cancel">Cancel</string>
+    
+    <!-- POI List Fragment -->
+    <string name="filter_all">All</string>
+    <string name="filter_accommodation">Accommodation</string>
+    <string name="filter_restaurant">Restaurant</string>
+    <string name="filter_cultural">Cultural</string>
+    <string name="filter_entertainment">Entertainment</string>
+    <string name="filter_relaxation">Relaxation</string>
+    <string name="filter_sports">Sports</string>
+    <string name="back">Back</string>
+    
+    <!-- Accommodation -->
+    <string name="min_nightly_rate">Minimum Nightly Rate</string>
+    <string name="accommodation_tags">Accommodation Tags</string>
+    
+    <!-- Restaurant -->
+    <string name="cuisine_origin">Cuisine Origin</string>
+    <string name="price_range">Price Range</string>
+    <string name="restaurant_tags">Restaurant Tags</string>
+    
+    <!-- Venues -->
+    <string name="opening_hours">Opening Hours</string>
+    <string name="closing_hours">Closing Hours</string>
+    <string name="entry_fee">Entry Fee</string>
+    <string name="cultural_tags">Cultural Tags</string>
+    <string name="entertainment_tags">Entertainment Tags</string>
+    <string name="relaxation_tags">Relaxation Tags</string>
+    <string name="sports_tags">Sports Tags</string>
+    <string name="subscription_required">Subscription Required</string>
+    
+    <!-- Validation Messages -->
+    <string name="error_name_required">Name is required</string>
+    <string name="error_description_required">Description is required</string>
+    <string name="error_latitude_required">Latitude is required</string>
+    <string name="error_longitude_required">Longitude is required</string>
+    <string name="error_place_type_required">Place type is required</string>
+    <string name="place_saved">Place saved successfully!</string>
+    <string name="place_updated">Place updated successfully!</string>
+    <string name="error_saving_place">Error saving place: %1$s</string>
 </resources>

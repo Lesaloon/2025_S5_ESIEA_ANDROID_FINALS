@@ -69,7 +69,7 @@ public class CreatePlaceFragment extends Fragment {
     private TextInputEditText nameInput, descriptionInput, phoneInput, emailInput, websiteInput, latitudeInput, longitudeInput;
     private AutoCompleteTextView placeTypeDropdown;
     private LinearLayout dynamicFieldsContainer;
-    private MaterialButton selectLocationButton, saveButton;
+    private MaterialButton selectLocationButton, saveButton, cancelButton;
     
     private PlaceType selectedPlaceType;
     private boolean isEditMode = false;
@@ -128,6 +128,7 @@ public class CreatePlaceFragment extends Fragment {
         dynamicFieldsContainer = view.findViewById(R.id.dynamic_fields_container);
         selectLocationButton = view.findViewById(R.id.select_location_button);
         saveButton = view.findViewById(R.id.save_button);
+        cancelButton = view.findViewById(R.id.cancel_button);
     }
 
     private void setupPlaceTypeDropdown() {
@@ -182,6 +183,11 @@ public class CreatePlaceFragment extends Fragment {
             if (validateInputs()) {
                 savePlaceToDatabase();
             }
+        });
+        
+        cancelButton.setOnClickListener(v -> {
+            // Go back to previous screen without saving
+            requireActivity().getSupportFragmentManager().popBackStack();
         });
     }
     
