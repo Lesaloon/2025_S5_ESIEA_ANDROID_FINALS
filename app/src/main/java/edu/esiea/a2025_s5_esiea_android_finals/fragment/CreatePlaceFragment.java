@@ -96,8 +96,8 @@ public class CreatePlaceFragment extends Fragment {
             double latitude = args.getDouble("latitude");
             double longitude = args.getDouble("longitude");
             
-            latitudeInput.setText(String.valueOf(latitude));
-            longitudeInput.setText(String.valueOf(longitude));
+//            latitudeInput.setText(String.valueOf(latitude));
+//            longitudeInput.setText(String.valueOf(longitude));
         }
     }
 
@@ -107,8 +107,8 @@ public class CreatePlaceFragment extends Fragment {
         phoneInput = view.findViewById(R.id.phone_input);
         emailInput = view.findViewById(R.id.email_input);
         websiteInput = view.findViewById(R.id.website_input);
-        latitudeInput = view.findViewById(R.id.latitude_input);
-        longitudeInput = view.findViewById(R.id.longitude_input);
+//        latitudeInput = view.findViewById(R.id.latitude_input);
+//        longitudeInput = view.findViewById(R.id.longitude_input);
         placeTypeDropdown = view.findViewById(R.id.place_type_dropdown);
         dynamicFieldsContainer = view.findViewById(R.id.dynamic_fields_container);
         selectLocationButton = view.findViewById(R.id.select_location_button);

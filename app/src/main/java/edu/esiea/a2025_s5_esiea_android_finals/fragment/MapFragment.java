@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -52,9 +53,9 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
 
         // Add map click listener
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(this);
-        mapView.getOverlays().add(0, mapEventsOverlay); // Ensure it gets events first
+        mapView.getOverlays().add(0, mapEventsOverlay); // Add at position 0 to ensure it gets events first
 
-        // Remove the hardcoded showAllPlaces() call and load saved places instead
+        // Load saved places from the database (see previous implementation)
         loadSavedPlaces();
 
         // Center the map (Default location: Paris)
@@ -72,6 +73,16 @@ public class MapFragment extends Fragment implements MapEventsReceiver {
                 // TODO: Implement search functionality
             }
             return false;
+        });
+
+        // Setup the List POI button
+        Button btnListPoi = view.findViewById(R.id.btn_list_poi);
+        btnListPoi.setOnClickListener(v -> {
+            PointsOfInterestListFragment poiListFragment = new PointsOfInterestListFragment();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, poiListFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         return view;
