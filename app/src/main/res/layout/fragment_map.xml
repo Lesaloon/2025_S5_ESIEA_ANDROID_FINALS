@@ -3,18 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Search Bar -->
-    <EditText
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:hint="Search for a place..."
-        android:background="@android:drawable/editbox_background"
-        android:padding="10dp"
-        android:drawableLeft="@android:drawable/ic_menu_search"
-        android:inputType="text" />
-
     <!-- OpenStreetMap View -->
     <org.osmdroid.views.MapView
         android:id="@+id/map"

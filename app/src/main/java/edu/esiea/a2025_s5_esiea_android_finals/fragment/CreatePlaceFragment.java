@@ -39,7 +39,9 @@ import edu.esiea.a2025_s5_esiea_android_finals.business.models.Restaurant;
 import edu.esiea.a2025_s5_esiea_android_finals.business.models.SportsVenue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CreatePlaceFragment extends Fragment {
 
@@ -70,6 +72,10 @@ public class CreatePlaceFragment extends Fragment {
     private MaterialButton selectLocationButton, saveButton;
     
     private PlaceType selectedPlaceType;
+    private boolean isEditMode = false;
+    private int placeId;
+    private String placeTypeString;
+    private Place currentPlace;
 
     private double latitude, longitude;
 
@@ -91,14 +97,24 @@ public class CreatePlaceFragment extends Fragment {
         setupPlaceTypeDropdown();
         setupButtons();
         
-        // Check if coordinates were passed from MapFragment
+        // Check for arguments
         Bundle args = getArguments();
-        if (args != null && args.containsKey("latitude") && args.containsKey("longitude")) {
-            // Fill in latitude and longitude fields
-            double latitude = args.getDouble("latitude");
-            double longitude = args.getDouble("longitude");
-            this.latitude = latitude;
-            this.longitude = longitude;
+        if (args != null) {
+            // Get coordinates
+            if (args.containsKey("latitude") && args.containsKey("longitude")) {
+                this.latitude = args.getDouble("latitude");
+                this.longitude = args.getDouble("longitude");
+            }
+            
+            // Check if we're in edit mode
+            if (args.containsKey("edit_mode") && args.getBoolean("edit_mode")) {
+                isEditMode = true;
+                placeId = args.getInt("place_id");
+                placeTypeString = args.getString("place_type");
+                
+                // Load place data based on ID and type
+                loadPlaceForEditing();
+            }
         }
     }
 
@@ -152,6 +168,11 @@ public class CreatePlaceFragment extends Fragment {
     }
 
     private void setupButtons() {
+        // Update button text in edit mode
+        if (isEditMode) {
+            saveButton.setText("Update");
+        }
+        
         selectLocationButton.setOnClickListener(v -> {
             // Go back to map for location selection
             requireActivity().getSupportFragmentManager().popBackStack();
@@ -162,6 +183,306 @@ public class CreatePlaceFragment extends Fragment {
                 savePlaceToDatabase();
             }
         });
+    }
+    
+    private void loadPlaceForEditing() {
+        // Set the title/form header based on the place type
+        switch (placeTypeString) {
+            case "Accommodation":
+                selectedPlaceType = PlaceType.ACCOMODATION;
+                placeTypeDropdown.setText(selectedPlaceType.toString());
+                viewModel.getAllAccommodations().observe(getViewLifecycleOwner(), accommodations -> {
+                    for (Accomodation accommodation : accommodations) {
+                        if (accommodation.id == placeId) {
+                            currentPlace = accommodation;
+                            populateFormWithPlaceData(accommodation);
+                            break;
+                        }
+                    }
+                });
+                break;
+                
+            case "Restaurant":
+                selectedPlaceType = PlaceType.RESTAURANT;
+                placeTypeDropdown.setText(selectedPlaceType.toString());
+                viewModel.getAllRestaurants().observe(getViewLifecycleOwner(), restaurants -> {
+                    for (Restaurant restaurant : restaurants) {
+                        if (restaurant.id == placeId) {
+                            currentPlace = restaurant;
+                            populateFormWithPlaceData(restaurant);
+                            break;
+                        }
+                    }
+                });
+                break;
+                
+            case "CulturalVenue":
+                selectedPlaceType = PlaceType.CULTURAL_VENUE;
+                placeTypeDropdown.setText(selectedPlaceType.toString());
+                viewModel.getAllCulturalVenues().observe(getViewLifecycleOwner(), venues -> {
+                    for (CulturalVenue venue : venues) {
+                        if (venue.id == placeId) {
+                            currentPlace = venue;
+                            populateFormWithPlaceData(venue);
+                            break;
+                        }
+                    }
+                });
+                break;
+                
+            case "EntertainmentVenue":
+                selectedPlaceType = PlaceType.ENTERTAINMENT_VENUE;
+                placeTypeDropdown.setText(selectedPlaceType.toString());
+                viewModel.getAllEntertainmentVenues().observe(getViewLifecycleOwner(), venues -> {
+                    for (EntertainmentVenue venue : venues) {
+                        if (venue.id == placeId) {
+                            currentPlace = venue;
+                            populateFormWithPlaceData(venue);
+                            break;
+                        }
+                    }
+                });
+                break;
+                
+            case "RelaxationVenue":
+                selectedPlaceType = PlaceType.RELAXATION_VENUE;
+                placeTypeDropdown.setText(selectedPlaceType.toString());
+                viewModel.getAllRelaxationVenues().observe(getViewLifecycleOwner(), venues -> {
+                    for (RelaxationVenue venue : venues) {
+                        if (venue.id == placeId) {
+                            currentPlace = venue;
+                            populateFormWithPlaceData(venue);
+                            break;
+                        }
+                    }
+                });
+                break;
+                
+            case "SportsVenue":
+                selectedPlaceType = PlaceType.SPORTS_VENUE;
+                placeTypeDropdown.setText(selectedPlaceType.toString());
+                viewModel.getAllSportsVenues().observe(getViewLifecycleOwner(), venues -> {
+                    for (SportsVenue venue : venues) {
+                        if (venue.id == placeId) {
+                            currentPlace = venue;
+                            populateFormWithPlaceData(venue);
+                            break;
+                        }
+                    }
+                });
+                break;
+        }
+        
+        // Create the dynamic fields for the place type
+        updateDynamicFields();
+    }
+    
+    private void populateFormWithPlaceData(Place place) {
+        // Fill in common fields
+        nameInput.setText(place.name);
+        descriptionInput.setText(place.description);
+        phoneInput.setText(place.phoneNumber);
+        emailInput.setText(place.email);
+        websiteInput.setText(place.websiteURL);
+        
+        // Set latitude and longitude
+        this.latitude = place.latitude;
+        this.longitude = place.longitude;
+        
+        // The dynamic fields are created in updateDynamicFields method
+        // We need to wait for them to be created before populating
+        dynamicFieldsContainer.post(() -> {
+            // Populate type-specific fields based on the place type
+            if (place instanceof Accomodation) {
+                Accomodation accommodation = (Accomodation) place;
+                
+                // Set minimum nightly rate
+                TextInputEditText rateInput = findInputByTag("minNightlyRate");
+                if (rateInput != null) {
+                    rateInput.setText(String.valueOf(accommodation.minNightlyRate));
+                }
+                
+                // Set accommodation tags
+                setSelectedTags(accommodation.tags);
+                
+            } else if (place instanceof Restaurant) {
+                Restaurant restaurant = (Restaurant) place;
+                
+                // Set cuisine origin
+                TextInputEditText cuisineInput = findInputByTag("cuisineOrigin");
+                if (cuisineInput != null) {
+                    cuisineInput.setText(restaurant.cuisineOrigin);
+                }
+                
+                // Set price range
+                AutoCompleteTextView priceInput = findDropdownByTag("priceRange");
+                if (priceInput != null && restaurant.priceRange != null) {
+                    String displayValue = "";
+                    switch (restaurant.priceRange) {
+                        case CHEAP:
+                            displayValue = "$ (Cheap)";
+                            break;
+                        case MODERATE:
+                            displayValue = "$$ (Moderate)";
+                            break;
+                        case EXPENSIVE:
+                            displayValue = "$$$ (Expensive)";
+                            break;
+                    }
+                    priceInput.setText(displayValue);
+                }
+                
+                // Set restaurant tags
+                setSelectedTags(restaurant.tags);
+                
+            } else if (place instanceof CulturalVenue) {
+                CulturalVenue venue = (CulturalVenue) place;
+                
+                // Set opening hours
+                TextInputEditText openingInput = findInputByTag("openingHours");
+                if (openingInput != null) {
+                    openingInput.setText(venue.openingHours);
+                }
+                
+                // Set closing hours
+                TextInputEditText closingInput = findInputByTag("closingHours");
+                if (closingInput != null) {
+                    closingInput.setText(venue.closingHours);
+                }
+                
+                // Set entry fee
+                TextInputEditText feeInput = findInputByTag("entryFee");
+                if (feeInput != null && venue.entryFee != null) {
+                    feeInput.setText(String.valueOf(venue.entryFee));
+                }
+                
+                // Set cultural tags
+                setSelectedTags(venue.tags);
+                
+            } else if (place instanceof EntertainmentVenue) {
+                EntertainmentVenue venue = (EntertainmentVenue) place;
+                
+                // Set opening hours
+                TextInputEditText openingInput = findInputByTag("openingHours");
+                if (openingInput != null) {
+                    openingInput.setText(venue.openingHours);
+                }
+                
+                // Set closing hours
+                TextInputEditText closingInput = findInputByTag("closingHours");
+                if (closingInput != null) {
+                    closingInput.setText(venue.closingHours);
+                }
+                
+                // Set entry fee
+                TextInputEditText feeInput = findInputByTag("entryFee");
+                if (feeInput != null && venue.entryFee != null) {
+                    feeInput.setText(String.valueOf(venue.entryFee));
+                }
+                
+                // Set entertainment tags
+                setSelectedTags(venue.tags);
+                
+            } else if (place instanceof RelaxationVenue) {
+                RelaxationVenue venue = (RelaxationVenue) place;
+                
+                // Set opening hours
+                TextInputEditText openingInput = findInputByTag("openingHours");
+                if (openingInput != null) {
+                    openingInput.setText(venue.openingHours);
+                }
+                
+                // Set closing hours
+                TextInputEditText closingInput = findInputByTag("closingHours");
+                if (closingInput != null) {
+                    closingInput.setText(venue.closingHours);
+                }
+                
+                // Set entry fee
+                TextInputEditText feeInput = findInputByTag("entryFee");
+                if (feeInput != null && venue.entryFee != null) {
+                    feeInput.setText(String.valueOf(venue.entryFee));
+                }
+                
+                // Set relaxation tags
+                setSelectedTags(venue.tags);
+                
+            } else if (place instanceof SportsVenue) {
+                SportsVenue venue = (SportsVenue) place;
+                
+                // Set opening hours
+                TextInputEditText openingInput = findInputByTag("openingHours");
+                if (openingInput != null) {
+                    openingInput.setText(venue.openingHours);
+                }
+                
+                // Set closing hours
+                TextInputEditText closingInput = findInputByTag("closingHours");
+                if (closingInput != null) {
+                    closingInput.setText(venue.closingHours);
+                }
+                
+                // Set entry fee
+                TextInputEditText feeInput = findInputByTag("entryFee");
+                if (feeInput != null && venue.entryFee != null) {
+                    feeInput.setText(String.valueOf(venue.entryFee));
+                }
+                
+                // Set subscription required checkbox
+                MaterialCheckBox subscriptionCheckbox = null;
+                for (int i = 0; i < dynamicFieldsContainer.getChildCount(); i++) {
+                    View child = dynamicFieldsContainer.getChildAt(i);
+                    if (child instanceof MaterialCheckBox && 
+                            ((MaterialCheckBox) child).getText().toString().contains("Subscription")) {
+                        subscriptionCheckbox = (MaterialCheckBox) child;
+                        break;
+                    }
+                }
+                
+                if (subscriptionCheckbox != null) {
+                    subscriptionCheckbox.setChecked(venue.SubscriptionRequired);
+                }
+                
+                // Set sports tags
+                setSelectedTags(venue.tags);
+            }
+        });
+    }
+    
+    private <T extends Enum<?>> void setSelectedTags(List<T> tags) {
+        if (tags == null || tags.isEmpty()) {
+            return;
+        }
+        
+        // Find the chip group
+        ChipGroup chipGroup = null;
+        for (int i = 0; i < dynamicFieldsContainer.getChildCount(); i++) {
+            View child = dynamicFieldsContainer.getChildAt(i);
+            if (child instanceof ChipGroup && "tag_chips".equals(child.getTag())) {
+                chipGroup = (ChipGroup) child;
+                break;
+            }
+        }
+        
+        if (chipGroup != null) {
+            for (int i = 0; i < chipGroup.getChildCount(); i++) {
+                View child = chipGroup.getChildAt(i);
+                if (child instanceof Chip) {
+                    Chip chip = (Chip) child;
+                    Object tagObj = chip.getTag();
+                    
+                    // Check if this tag is in the selected tags list
+                    if (tagObj instanceof Enum) {
+                        for (T tag : tags) {
+                            if (tagObj.toString().equals(tag.toString())) {
+                                chip.setChecked(true);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void updateDynamicFields() {
@@ -213,15 +534,36 @@ public class CreatePlaceFragment extends Fragment {
         AutoCompleteTextView priceDropdown = new AutoCompleteTextView(requireContext());
         priceDropdown.setInputType(android.text.InputType.TYPE_NULL);
         
-        String[] priceRanges = new String[PriceRange.values().length];
-        for (int i = 0; i < PriceRange.values().length; i++) {
-            priceRanges[i] = PriceRange.values()[i].name();
+        // Create more user-friendly price range options
+        String[] priceRangeOptions = new String[PriceRange.values().length];
+        PriceRange[] priceRangeValues = PriceRange.values();
+        
+        for (int i = 0; i < priceRangeValues.length; i++) {
+            switch (priceRangeValues[i]) {
+                case CHEAP:
+                    priceRangeOptions[i] = "$ (Cheap)";
+                    break;
+                case MODERATE:
+                    priceRangeOptions[i] = "$$ (Moderate)";
+                    break;
+                case EXPENSIVE:
+                    priceRangeOptions[i] = "$$$ (Expensive)";
+                    break;
+                default:
+                    priceRangeOptions[i] = priceRangeValues[i].name();
+            }
+        }
+        
+        // Create a map to convert display text back to enum value
+        Map<String, String> priceRangeDisplayToEnum = new HashMap<>();
+        for (int i = 0; i < priceRangeOptions.length; i++) {
+            priceRangeDisplayToEnum.put(priceRangeOptions[i], priceRangeValues[i].name());
         }
         
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_dropdown_item_1line,
-                priceRanges
+                priceRangeOptions
         );
         priceDropdown.setAdapter(adapter);
         priceLayout.addView(priceDropdown);
@@ -380,14 +722,63 @@ public class CreatePlaceFragment extends Fragment {
             Place place = createPlaceBasedOnType();
 
             if (place != null) {
-                // Currently only Accommodation is fully implemented in the database
+                // If we're in edit mode, preserve the ID
+                if (isEditMode && currentPlace != null) {
+                    place.id = currentPlace.id;
+                }
+                
+                String successMessage = isEditMode ? 
+                        getString(R.string.place_updated) : 
+                        getString(R.string.place_saved);
+                
+                // Save to the database based on the place type
                 if (place instanceof Accomodation) {
-                    viewModel.insertAccommodation((Accomodation) place);
-                    Toast.makeText(requireContext(), getString(R.string.place_saved), Toast.LENGTH_SHORT).show();
+                    if (isEditMode) {
+                        viewModel.updateAccommodation((Accomodation) place);
+                    } else {
+                        viewModel.insertAccommodation((Accomodation) place);
+                    }
+                    Toast.makeText(requireContext(), successMessage, Toast.LENGTH_SHORT).show();
+                } else if (place instanceof CulturalVenue) {
+                    if (isEditMode) {
+                        viewModel.updateCulturalVenue((CulturalVenue) place);
+                    } else {
+                        viewModel.insertCulturalVenue((CulturalVenue) place);
+                    }
+                    Toast.makeText(requireContext(), successMessage, Toast.LENGTH_SHORT).show();
+                } else if (place instanceof EntertainmentVenue) {
+                    if (isEditMode) {
+                        viewModel.updateEntertainmentVenue((EntertainmentVenue) place);
+                    } else {
+                        viewModel.insertEntertainmentVenue((EntertainmentVenue) place);
+                    }
+                    Toast.makeText(requireContext(), successMessage, Toast.LENGTH_SHORT).show();
+                } else if (place instanceof RelaxationVenue) {
+                    if (isEditMode) {
+                        viewModel.updateRelaxationVenue((RelaxationVenue) place);
+                    } else {
+                        viewModel.insertRelaxationVenue((RelaxationVenue) place);
+                    }
+                    Toast.makeText(requireContext(), successMessage, Toast.LENGTH_SHORT).show();
+                } else if (place instanceof Restaurant) {
+                    if (isEditMode) {
+                        viewModel.updateRestaurant((Restaurant) place);
+                    } else {
+                        viewModel.insertRestaurant((Restaurant) place);
+                    }
+                    Toast.makeText(requireContext(), successMessage, Toast.LENGTH_SHORT).show();
+                } else if (place instanceof SportsVenue) {
+                    if (isEditMode) {
+                        viewModel.updateSportsVenue((SportsVenue) place);
+                    } else {
+                        viewModel.insertSportsVenue((SportsVenue) place);
+                    }
+                    Toast.makeText(requireContext(), successMessage, Toast.LENGTH_SHORT).show();
                 } else {
                     // For other types, show a message (you may extend the database later)
                     Toast.makeText(requireContext(), "Entity created but database implementation is pending", Toast.LENGTH_SHORT).show();
                 }
+                
                 // After saving, navigate back to the MapFragment so the new marker will be displayed
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
@@ -476,7 +867,24 @@ public class CreatePlaceFragment extends Fragment {
         // Get price range
         AutoCompleteTextView priceInput = findDropdownByTag("priceRange");
         if (priceInput != null && !priceInput.getText().toString().isEmpty()) {
-            restaurant.priceRange = PriceRange.valueOf(priceInput.getText().toString());
+            String priceText = priceInput.getText().toString();
+            
+            // Convert display text to enum value
+            if (priceText.contains("$ (Cheap)")) {
+                restaurant.priceRange = PriceRange.CHEAP;
+            } else if (priceText.contains("$$ (Moderate)")) {
+                restaurant.priceRange = PriceRange.MODERATE;
+            } else if (priceText.contains("$$$ (Expensive)")) {
+                restaurant.priceRange = PriceRange.EXPENSIVE;
+            } else {
+                // Fallback to direct enum parsing if needed
+                try {
+                    restaurant.priceRange = PriceRange.valueOf(priceText);
+                } catch (IllegalArgumentException e) {
+                    // If parsing fails, set a default
+                    restaurant.priceRange = PriceRange.MODERATE;
+                }
+            }
         }
         
         // Get selected tags

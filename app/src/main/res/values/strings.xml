@@ -14,6 +14,16 @@
     <string name="select_location">Select Location on Map</string>
     <string name="save_place">Save Place</string>
     
+    <!-- POI List Fragment -->
+    <string name="filter_all">All</string>
+    <string name="filter_accommodation">Accommodation</string>
+    <string name="filter_restaurant">Restaurant</string>
+    <string name="filter_cultural">Cultural</string>
+    <string name="filter_entertainment">Entertainment</string>
+    <string name="filter_relaxation">Relaxation</string>
+    <string name="filter_sports">Sports</string>
+    <string name="back">Back</string>
+    
     <!-- Accommodation -->
     <string name="min_nightly_rate">Minimum Nightly Rate</string>
     <string name="accommodation_tags">Accommodation Tags</string>
@@ -40,5 +50,6 @@
     <string name="error_longitude_required">Longitude is required</string>
     <string name="error_place_type_required">Place type is required</string>
     <string name="place_saved">Place saved successfully!</string>
+    <string name="place_updated">Place updated successfully!</string>
     <string name="error_saving_place">Error saving place: %1$s</string>
 </resources>

@@ -39,10 +39,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             requestPermissions();
         }
-
-        // Bottom Navigation Button Clicks
-        //findViewById(R.id.btn_all_places).setOnClickListener(v -> mapFragment.showAllPlaces());
-        //findViewById(R.id.btn_nearby_places).setOnClickListener(v -> showNearbyPlaces());
     }
     
     private boolean hasPermissions() {
